@@ -1,0 +1,610 @@
+ 1. Inorder Iterative
+
+inorderTraversal(TreeNode* a) {
+
+    vector<int> ans;
+
+    stack<pair<TreeNode*,int>> s;
+
+    s.push({a,1});
+
+    while(s.size()>0)
+    {
+        if(s.top().second==1)
+        {
+           s.top().second++;
+             if(s.top().first->left!=NULL)
+             s.push({s.top().first->left,1});
+        }
+        else
+        if(s.top().second==2)
+        {
+            ans.push_back(s.top().first->val);
+             s.top().second++;
+             if(s.top().first->right!=NULL)
+             s.push({s.top().first->right,1});
+        }
+        else
+        if(s.top().second==3)
+        {
+            s.pop();
+
+        }
+    }
+
+
+   return ans; 
+}
+
+2. Vertical order traversal
+
+verticalOrderTraversal(TreeNode* a) {
+
+      queue<pair<int,TreeNode*>> s;
+
+      map<int,vector<int>> mp;
+
+      vector<vector<int>> ans;
+     if(a==NULL) return ans;
+
+      s.push({0,a});
+
+      while(s.size()>0)
+      {
+          pair<int,TreeNode*> temp=s.front();
+          s.pop();
+
+          mp[temp.first].push_back(temp.second->val);
+
+          if(temp.second->left)
+           s.push({temp.first-1,temp.second->left});
+          if(temp.second->right)
+           s.push({temp.first+1,temp.second->right}); 
+
+      }
+      
+      for(auto x:mp)
+        ans.push_back(x.second);
+
+        return ans;
+
+     
+}
+
+3.  Digonal Traversal
+
+void digonal(TreeNode* a,map<int,vector<int>> &m,int hd )
+ {
+     if(a==NULL) return ;
+
+     m[hd].push_back(a->val);
+
+     digonal(a->left,m,hd+1);
+     digonal(a->right,m,hd);
+
+ }
+vector<int> Solution::solve(TreeNode* a) {
+
+    map<int,vector<int>>m;
+    int hd=0;
+
+    digonal(a,m,hd);
+
+    vector<int> ans;
+
+    for(auto x:m)
+    for(int i=0;i<x.second.size();i++)
+    {
+        ans.push_back(x.second[i]);
+    }
+
+    return ans;
+
+}
+
+4. Right view of Binary tree
+
+solve(TreeNode* a) {
+
+      vector<int> ans;
+
+      queue<pair<int,TreeNode*>> q;
+
+      q.push({0,a});
+       int flag=1;
+
+       while(!q.empty())
+       {
+          pair<int,TreeNode*> p;
+          p=q.front();
+          q.pop();
+          if(flag-p.first==1)
+            {  ans.push_back(p.second->val); flag++;}
+
+            if(p.second->right)
+              q.push({p.first+1,p.second->right});
+
+            if(p.second->left)
+              q.push({p.first+1,p.second->left});  
+       }
+
+       return ans;
+} 
+
+5. reverse level order traversal
+
+solve(TreeNode* a) {
+
+    queue<TreeNode*> q;
+
+    vector<int> ans;
+
+    q.push(a);
+
+    while(!q.empty())
+    {
+        TreeNode*temp=q.front();
+        q.pop();
+
+        ans.push_back(temp->val);
+
+        if(temp->right)
+        q.push(temp->right);
+
+
+        if(temp->left)
+        q.push(temp->left);
+    }
+
+    reverse(ans.begin(),ans.end());
+
+    return ans;
+}
+
+6. Zig zig level order traversal
+
+zigzagLevelOrder(TreeNode* a) {
+
+    queue<pair<int,TreeNode*>> q;
+
+    vector<vector<int> > ans;
+     map<int,vector<int>> m;
+    q.push({0,a});
+
+    while(!q.empty())
+    {
+      pair<int,TreeNode*> p=q.front();
+      q.pop();
+
+        m[p.first].push_back(p.second->val);
+
+       
+            if(p.second->right)
+           q.push({p.first+1,p.second->right});
+
+           if(p.second->left)
+           q.push({p.first+1,p.second->left});
+         
+    }
+
+    for(auto x:m)
+    {
+        if(x.first%2==0)
+        {
+            reverse(x.second.begin(),x.second.end());
+            ans.push_back(x.second);
+        }
+        else
+        {
+            ans.push_back(x.second);
+        }
+    }
+
+    return ans;
+}
+
+7. Populate Next Right Pointers Tree
+
+connect(TreeLinkNode* a) {
+
+    queue<pair<int,TreeLinkNode*>> q;
+     q.push({0,a});
+
+     while(!q.empty())
+     {
+         pair<int,TreeLinkNode*> p=q.front();
+         q.pop();
+
+         int x=p.first;
+         TreeLinkNode* y=p.second;
+        
+          if(q.empty())
+          {
+             y->next==NULL;
+          }
+          else
+          {
+            if(x==q.front().first)
+            y->next=q.front().second;
+            else
+            y->next=NULL;
+
+          }
+          if(y->left)
+            q.push({x+1,y->left});
+
+          if(y->right)
+            q.push({x+1,y->right});
+
+
+     }
+
+     return ;
+
+}
+
+8.  Balanced binary tree or Not
+
+int height(TreeNode* a)
+ {
+     if(a==NULL)
+     return 0;
+
+     int lh=height(a->left);
+     int rh=height(a->right);
+      if(lh==-1||rh==-1) return -1;
+      if(abs(lh-rh)>1) return -1;
+     return 1+max(lh,rh);
+ }
+int Solution::isBalanced(TreeNode* a) {
+
+    
+
+    int ans=height(a);
+
+    if(ans==-1) return 0;
+    else
+    return 1;
+}
+
+9. path to given node
+
+bool check(TreeNode* a,vector<int> &v,int b)
+ {
+     if(a==NULL)  return false;
+
+     if(a->val==b) return true ;
+      v.push_back(a->val);
+
+     if(check(a->left,v,b)||check(a->right,v,b))
+         return true;
+
+         v.pop_back();
+         return false;
+
+ }
+vector<int> Solution::solve(TreeNode* a, int b) {
+
+    vector<int> ans;
+
+    if(a==NULL)
+     return ans;
+
+
+     check(a,ans,b);
+     ans.push_back(b);
+     return ans;
+
+}
+
+10. Remove Half Node
+
+ struct TreeNode* half(TreeNode* root)
+    {
+        if(root==NULL) return NULL;
+
+        root->left=half(root->left);
+        root->right=half(root->right);
+
+        if(root->left==NULL&&root->right==NULL)
+          return root;
+
+        if(root->left==NULL)
+           return root->right;
+
+        if(root->right==NULL)
+          return root->left;
+
+          return root;
+
+    }
+    
+
+11. max depth of tree
+
+int Solution::maxDepth(TreeNode* a) {
+
+    if(a==NULL) return 0;
+
+    int lh=maxDepth(a->left);
+    int rh=maxDepth(a->right);
+
+    return 1+max(lh,rh);
+} 
+
+12. MIn depth 
+
+minDepth(TreeNode* a) {
+    if(a==NULL ) return 0;
+    if(a->left==NULL&&a->right==NULL) return 1;
+
+     int lh=INT_MAX;
+     int rh=INT_MAX;
+    if(a->left)
+    lh=minDepth(a->left);
+
+    if(a->right)
+     rh=minDepth(a->right);
+
+    return 1+min(lh,rh);
+}
+
+13. path sum
+
+int pathSum(TreeNode* a,int b, int sum)
+ {
+     if(a==NULL)  return 0;
+
+      sum+=a->val;
+      if(sum==b&&a->left==NULL&&a->right==NULL)
+       return 1;
+       int x=0;
+       int y=0;
+       if(a->left)
+       x=pathSum(a->left,b,sum);
+
+       if(a->right)
+       y=pathSum(a->right,b,sum);
+
+       return x||y;
+       
+ }
+
+14. Sum root to leaf numbers
+
+int Sum(TreeNode* a,int sum)
+ {
+     if(a==NULL) return 0;
+       
+       sum=(sum*10+a->val)%1003;
+
+       if(a->left==NULL &&a->right==NULL)
+       return sum;
+
+      return (Sum(a->left,sum)%1003+Sum(a->right,sum)%1003)%1003;
+ }
+
+15. LCA 
+
+
+ bool path(TreeNode* a,int b,vector<int> &v)
+ {
+     if(a==NULL) return false ;
+
+      v.push_back(a->val);
+      if(a->val==b)
+      return true;
+
+      if(path(a->left,b,v)||path(a->right,b,v))
+         return true;
+
+      v.pop_back();
+      return false;
+ }
+
+
+int Solution::lca(TreeNode* a, int b, int c) {
+
+    vector<int> x;
+    vector<int> y;
+
+    path(a,b,x);
+    path(a,c,y);
+    int i=0;
+    int j=0;
+    int ans=-1;
+    while(i<x.size()&&j<y.size())
+    {
+        if(x[i]==y[j])
+        {
+            ans=x[i];
+            i++;j++;
+        }
+        else
+        {
+            break;
+        }
+
+    }
+    return ans;
+}
+
+16. symmetric check
+
+int check(TreeNode* a,TreeNode*b)
+  {
+       if(a==NULL&&b==NULL) return 1;
+       if(a==NULL&&b!=NULL) return 0;
+       if(a!=NULL&&b==NULL) return 0;
+       if(a->val!=b->val) return 0;
+      
+      if(check(a->left,b->right)==1&&check(a->right,b->left)==1)
+           return 1;
+
+           return 0;
+          
+  }
+
+17.  invert the binary tree
+
+invertTree(TreeNode* a) {
+         if(a==NULL) return NULL;
+            TreeNode* temp=new TreeNode(a->val);
+         temp->left=invertTree(a->right);
+         temp->right=invertTree(a->left);
+         return temp;
+}
+
+18. Binary tree from inorder and preorder 
+
+TreeNode* buildtree(vector<int> &pre,vector<int>& ino,int start, int end,int &ind)
+ { 
+    
+     if(start>end) return NULL;
+     TreeNode* root=new TreeNode(pre[ind]);
+     ind++;
+     
+     int inIndex;
+
+     for(int i=start;i<=end;i++)
+     {
+        if(ino[i]==root->val)
+        {
+            inIndex=i; break;
+        }
+     }
+
+     root->left=buildtree(pre,ino,start,inIndex-1,ind);
+     root->right=buildtree(pre,ino,inIndex+1,end,ind);
+
+     return root;
+ }
+
+    
+TreeNode* Solution::buildTree(vector<int> &pre, vector<int> &ino) {
+
+    int ind=0;
+    return buildtree(pre,ino,0,ino.size()-1,ind);
+}
+
+
+19.  binary tree from inorder and postorder
+
+TreeNode* cTree(vector<int> &inorder,vector<int> &postorder,int start,int end,int &ind)
+{
+    if(start>end) return NULL;
+     
+     TreeNode* root=new TreeNode(postorder[ind--]);
+
+     int indIndex;
+
+     for(int i=start;i<=end;i++)
+     {
+         if(inorder[i]==root->val)
+         {
+             indIndex=i;
+             break;
+         }
+     }
+
+     root->right=cTree(inorder,postorder,indIndex+1,end,ind);
+     root->left=cTree(inorder,postorder,start,indIndex-1,ind);
+
+     return root;
+}
+
+TreeNode* Solution::buildTree(vector<int> &inorder ,vector<int> &postorder) {
+
+    int ind=postorder.size()-1;
+
+    return cTree(inorder,postorder,0,ind,ind);
+
+}
+
+20. build BST from sorted Array
+TreeNode* buildTree(vector<int> &a,int start,int end)
+{
+    if(start>end) return NULL;
+
+    int mid=(start+end)/2;
+
+    TreeNode* root=new TreeNode(a[mid]);
+
+    root->left=buildTree(a,start,mid-1);
+    root->right=buildTree(a,mid+1,end);
+
+    return root;
+
+
+}
+
+21.  Merge two Tree
+
+TreeNode* merge(TreeNode*  a,TreeNode* b)
+{  
+       if(a==NULL&&b==NULL) return NULL;
+       if(a==NULL&&b!=NULL) return b;
+       if(a!=NULL&&b==NULL ) return a;
+      TreeNode* root=new TreeNode(a->val+b->val);
+      root->left=merge(a->left,b->left);
+      root->right=merge(a->right,b->right);
+
+      return root;
+
+}
+
+22.valid BST form Preorder
+
+solve(vector<int> &A) {
+
+     stack<int> s;
+
+     int root=INT_MIN;
+
+     for(int i=0;i<A.size();i++)
+     {
+         if(A[i]<root) return false;
+
+         while(s.size()>0&&A[i]>s.top())
+         {
+             root=s.top();
+             s.pop();
+         }
+
+         s.push(A[i]);
+     } 
+      return true;
+}
+
+23. 2-Sum Binary Tree
+
+bool Sum(TreeNode* a,int b,set<int> &s)
+ {
+     if(a==NULL) return false;
+     if(s.find(b-a->val)!=s.end())
+      return true;
+      else
+      s.insert(a->val);
+      
+      if(b<a->val)
+      return Sum(a->left,b,s);
+      else
+      return Sum(a->right,b,s)||Sum(a->left,b,s);
+       
+ }
+
+24. Kth smallest in tree
+
+TreeNode* kth(TreeNode* a,int &b)
+ {
+     if(a==NULL ) return NULL;
+
+     TreeNode* l=kth(a->left,b);
+
+     if(l!=NULL) return l;
+
+     b--;
+     if(b==0) return a;
+
+      return kth(a->right,b);
+ }

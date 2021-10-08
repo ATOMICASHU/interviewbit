@@ -1,0 +1,256 @@
+ ___RECURSION BACKTRACKING____
+1. Maximal String
+
+void maxi(string &a,string &s, int n)
+{
+  if(n==0)
+  return ;
+
+  for(int i=0;i<a.length()-1;i++)
+  for(int j=i+1;j<a.length();j++)
+  {
+      if(a[j]>a[i])
+      {
+          swap(a[j],a[i]);
+          if(a>s)
+            s=a;
+              maxi(a,s,n-1);
+              swap(a[j],a[i]);
+      }
+  }
+}
+
+2. kth permuation sequence
+
+string Solution::getPermutation(int n, int k) {
+ string ans="";
+ vector<int> v;
+ for(int i=1;i<=n;i++)
+    v.push_back(i);
+
+    for(int i=1;i<k;i++)
+    next_permutation(v.begin(),v.end());
+
+    for(int i=0;i<n;i++)
+    ans+=to_string(v[i]);
+
+    return ans;
+    
+    
+}
+
+3. Gray Code
+
+vector<string> gd(int n)
+{
+    vector<string> fans;
+    if(n==1)
+    {
+        fans.push_back("0");
+        fans.push_back("1");
+        return fans;
+    }
+
+    vector<string> res=gd(n-1);
+
+   for(int i=0;i<res.size();i++)
+    {
+        string s="0";
+        s=s+res[i];
+       fans.push_back(s);
+    }
+    for(int i=res.size()-1;i>=0;i--)
+    {
+        string s="1";
+        s=s+res[i];
+       fans.push_back(s);
+    }
+
+    return fans;
+
+}
+
+
+4. permutation
+
+void per(vector<vector<int>> &ans, vector<int> &a,int i,int n)
+{
+    if(i==n)
+    {
+        ans.push_back(a);
+        return;
+    }
+
+  for(int j=i;j<n;j++)
+  {
+       swap(a[i],a[j]);
+       per(ans,a,i+1,n);
+       swap(a[i],a[j]);
+  }
+
+}
+
+5. Combination Sum
+
+void sum(vector<vector<int>> &ans,vector<int> &res,vector<int> &a,int t ,int j)
+{
+   if(t==0)
+   {
+       ans.push_back(res);
+       return ;
+   }
+
+  for(int i=j;i<a.size();i++)
+  {
+      if(a[i]<=t)
+      {
+          res.push_back(a[i]);
+          sum(ans,res,a,t-a[i],i);
+          res.pop_back();
+      }
+  }
+}
+
+
+6. Combination SUm-II
+
+void sum(vector<vector<int>> &ans,vector<int> &res,vector<int> &a,int t,int j)
+{
+
+    if(t==0)
+    { 
+       
+        ans.push_back(res);
+        return;
+    }
+
+    for(int i=j;i<a.size();i++)
+    {
+        if(i==j)
+        {
+          if(a[i]<=t)
+          {
+              res.push_back(a[i]);
+              sum(ans,res,a,t-a[i],i+1);
+              res.pop_back();
+          }
+        }
+        else
+        if(a[i-1]!=a[i])
+        {
+            if(a[i]<=t)
+          {
+              res.push_back(a[i]);
+              sum(ans,res,a,t-a[i],i+1);
+              res.pop_back();
+          }
+          
+        }
+    }
+}
+
+7. Combination
+
+void combo(vector<vector<int>> &ans,vector<int> &res,vector<int> &a,int k,int j)
+{
+
+    if(k==0)
+    {
+        ans.push_back(res);
+        return;
+    }
+
+   for(int i=j;i<a.size();i++)
+   {
+       res.push_back(a[i]);
+       combo(ans,res,a,k-1,i+1);
+       res.pop_back();
+   }
+}
+
+8. Letter Phone
+
+void combo(map<char,string> &kep,vector<string> &ans, int i,string &a,string &s)
+{
+    
+    if(i==a.size())
+    {
+      ans.push_back(s);
+      return;
+    }
+    string str=kep[a[i]];
+  for(int j=0;j<str.length();j++)
+  {
+      s.push_back(str[j]);
+      combo(kep,ans,i+1,a,s);
+      s.pop_back();
+  }
+
+}
+
+9. Palindromic Partitioning
+
+void part(vector<vector<string>> &ans,string &a,vector<string> &res,int idx,int n)
+{
+
+if(idx==n)
+{
+    ans.push_back(res);
+    return;
+}
+   
+   for(int i=idx;i<n;i++)
+   {
+       string s=a.substr(idx,i-idx+1);
+       string str=s;
+       reverse(str.begin(),str.end());
+       if(str==s)
+       {
+         res.push_back(s);
+         part(ans,a,res,i+1,n);
+         res.pop_back();
+       }
+   }
+}
+
+10. Subset
+
+void sub(vector<vector<int>> &ans,vector<int> &a,vector<int> &res, int idx)
+ {
+
+    ans.push_back(res);
+    
+
+     for(int i=idx;i<a.size();i++)
+     {
+         res.push_back(a[i]);
+         sub(ans,a,res,i+1);
+         res.pop_back();
+     }
+ }
+
+11. Subset
+
+void sub(vector<vector<int>> &ans,vector<int> &res,int idx,vector<int> &a)
+{
+
+  ans.push_back(res);
+    for(int i=idx;i<a.size();i++)
+    {
+        if(i==idx)
+        {
+          res.push_back(a[i]);
+          sub(ans,res,i+1,a);
+          res.pop_back();
+        }
+        else
+        if(i>idx&&a[i-1]!=a[i])
+        {
+          res.push_back(a[i]);
+          sub(ans,res,i+1,a);
+          res.pop_back(); 
+        }
+    }
+    return;
+}
+

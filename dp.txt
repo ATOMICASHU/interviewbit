@@ -1,0 +1,690 @@
+1. LCS
+
+int t[1006][1006];
+int lcs(string a , string b,int n,int m)
+{
+      if(n==0||m==0)
+      return 0;
+      if(t[n][m]!=-1)
+      return t[n][m];
+      if(a[n-1]==b[m-1])
+      return t[n][m]=1+lcs(a,b,n-1,m-1);
+      else
+      return t[n][m]=max(lcs(a,b,n,m-1),lcs(a,b,n-1,m));
+}
+
+2. Longest Palindromic Subsequence
+
+int Solution::solve(string a) {
+   string b=a;
+   reverse(b.begin(),b.end());
+   int n=a.length();
+
+   int t[n+1][n+1];
+
+   for(int i=0;i<=n;i++)
+   {
+       for(int j=0;j<=n;j++)
+           if(i==0||j==0)
+           t[i][j]=0;  
+   }
+
+   for(int i=1;i<=n;i++)
+   for(int j=1;j<=n;j++)
+    if(a[i-1]==b[j-1])
+     t[i][j]=1+t[i-1][j-1];
+    else
+    if(a[i-1]!=b[j-1])
+     t[i][j]=max(t[i-1][j],t[i][j-1]);
+
+    return t[n][n];
+}
+
+3. Edit Distance
+
+int t[500][500];
+
+int mindis(string a,string b, int n, int m)
+{
+   if(n==0)
+   return m;
+   if(m==0)
+   return n;
+   
+   if(t[n][m]!=-1)
+   return t[n][m];
+
+   if(a[n-1]==b[m-1])
+    return t[n][m]=mindis(a,b,n-1,m-1);
+    else
+    {
+       return t[n][m]=1+min(mindis(a,b,n-1,m-1),min(mindis(a,b,n-1,m),mindis(a,b,n,m-1)));
+    }
+}
+
+4. Longest Repeating Subsequence
+
+anytwo(string a) {
+   
+    int n=a.length();
+    int t[n+1][n+1];
+
+    for(int i=0;i<=n;i++)
+    for(int j=0;j<=n;j++)
+     if(i==0||j==0)
+       t[i][j]=0;
+
+       for(int i=1;i<=n;i++)
+       for(int j=1;j<=n;j++)
+       {
+           if(a[i-1]==a[j-1]&&i!=j)
+             t[i][j]=1+t[i-1][j-1];
+
+             else
+             t[i][j]=max(t[i-1][j],t[i][j-1]);
+       }
+       if(t[n][n]>=2)
+       return 1;
+       else
+       return 0;
+
+}
+
+5. Distinct Subsequence
+
+int Solution::numDistinct(string a, string b) {
+
+int n=a.length();
+int m=b.length();
+
+int t[n+1][m+1];
+for(int i=0;i<=n;i++)
+for(int j=0;j<=m;j++)
+{
+    if(i==0&&j==0)
+    t[i][j]=1;
+    else
+    if(i==0)
+    t[i][j]=0;
+    else
+    if(j==0)
+    t[i][j]=1;
+}
+    for(int i=1;i<=n;i++)
+    for(int j=1;j<=m;j++)
+    {
+        if(a[i-1]!=b[j-1])
+        t[i][j]=t[i-1][j];
+        else
+        t[i][j]=t[i-1][j-1]+t[i-1][j];
+    }
+    return t[n][m];
+
+}
+
+6 . 0-1 Knapsack
+
+int t[1001][1001];
+
+int knap(vector<int> &a,vector<int> &b, int c,int n)
+{
+
+    if(n==0||c==0)
+    return t[n][c]=0;
+
+    if(t[n][c]!=-1)
+    return t[n][c];
+
+    if(b[n-1]<=c)
+    return t[n][c]=max(knap(a,b,c-b[n-1],n-1)+a[n-1],knap(a,b,c,n-1));
+    else
+    return t[n][c]=knap(a,b,c,n-1);
+}
+
+7. matrix chain multiplication
+
+int t[101][101];
+       
+       int multi(int a[],int i,int j)
+       {
+           if(i+1==j) return t[i][j]=0;
+           
+           if(t[i][j]!=-1)
+           return t[i][j];
+           
+         t[i][j]=INT_MAX;
+           
+           for(int k=i+1;k<j;k++)
+           {
+              t[i][j]=min(t[i][j],multi(a,i,k)+multi(a,k,j)+a[i]*a[k]*a[j]);
+               
+           }
+           
+           return t[i][j];
+       }
+    int matrixMultiplication(int n, int arr[])
+    {
+        memset(t,-1,sizeof(t));
+        return multi(arr,0,n-1);
+    }
+
+8. palindromic partitioning
+
+int t[1000][1000];
+
+bool isPalindrome(string s, int i,int j)
+{
+    string a=s.substr(i,j-i+1);
+    string b=a;
+    reverse(b.begin(),b.end());
+    if(a==b)
+    return true;
+    else
+    return false;
+}
+
+int cut(string s, int i,int j)
+{
+    if(i>=j) 
+    return t[i][j]=0;
+
+    if(isPalindrome(s,i,j))
+    return t[i][j]=0;
+
+     if(t[i][j]!=-1)
+     return t[i][j];
+
+     int mini=INT_MAX;
+
+     for(int k=i;k<j;k++)
+     {
+        int ans;
+        int left;
+        int right;
+        if(t[i][k]!=-1)
+          left=t[i][k];
+        else
+          left=cut(s,i,k);
+
+        if(t[k+1][j]!=-1)
+          right=t[k+1][j];
+        else
+           right=cut(s,k+1,j); 
+
+          ans=1+left+right;
+
+        mini=min(mini,ans);
+
+     }
+     return t[i][j]=mini;
+}
+
+9.Egg Dropping Problem 
+int t[101][10001];
+
+int solv(int e,int f)
+{
+   if(f==0||f==1) return t[e][f]= f;
+
+   if(e==1) return t[e][f]=f;
+
+   if(t[e][f]!=-1)
+   return t[e][f];
+   
+   int mini=INT_MAX;
+
+   for(int k=1;k<=f;k++)
+   {
+       int a;
+       int b;
+       int ans;
+      
+      if(t[e-1][k-1]!=-1)
+        a=t[e-1][k-1];
+        else
+        {a=solv(e-1,k-1);
+          t[e-1][k-1]=a;
+        }
+
+        if(t[e][f-k]!=-1)
+        b=t[e][f-k];
+        else
+        {b=solv(e,f-k);
+          t[e][f-k]=b;
+        }
+
+
+        ans=1+max(a,b);
+
+        mini=min(ans,mini);
+   }
+
+   return t[e][f]=mini;
+
+
+}
+
+
+int Solution::solve(int k(e), int n(f)) {
+
+    // memset(t,-1,sizeof(t));
+    //  return solv(e,f);
+    vector<int> dp(k + 1, 0);
+        int m;
+        for( m=0;dp[k]<n;m++){
+            for(int egg=k;egg>0;egg--)
+                dp[egg]= dp[egg-1]+ dp[egg]+1;
+        }
+        return m;
+
+
+}
+
+10. Longest Incresing then Decreasing Subsequence
+
+int Solution::longestSubsequenceLength(const vector<int> &A) {
+     
+   int n=A.size();
+   if(n==0)
+   return 0;
+   vector<int> a,b;
+   a=A;
+   b=A;
+   reverse(b.begin(),b.end());
+   vector<int> x(n),y(n);
+
+   for(int i=0;i<n;i++)
+   {   x[i]=1;
+       for(int j=0;j<i;j++)
+       {
+           if(a[i]>a[j])
+            x[i]=max(x[i],x[j]+1);
+       }
+   } 
+
+   for(int i=0;i<n;i++)
+   {   y[i]=1;
+       for(int j=0;j<i;j++)
+       {
+           if(b[i]>b[j])
+            y[i]=max(y[i],y[j]+1);
+       }
+   }
+
+   reverse(y.begin(),y.end());
+
+   int ans=INT_MIN;
+   for(int i=0;i<n;i++)
+   {
+       ans=max(ans,x[i]+y[i]-1);
+   }
+
+   return ans; 
+
+11. Longest Increasing Subsequence
+
+lis(const vector<int> &a) {
+
+    int n=a.size();
+    if(n==0||n==1)
+    return n;
+    vector<int> x(n);
+    for(int i=0;i<n;i++)
+    {   x[i]=1;
+        for(int j=0;j<i;j++)
+        if(a[i]>a[j])
+          x[i]=max(x[i],x[j]+1);
+    }
+ int ans=INT_MIN;
+
+ for(int i=0;i<n;i++)
+ ans=max(ans,x[i]);
+
+ return ans;
+
+12. Unique paths in grid with obstacles
+
+
+    int n=a.size();
+    int m=a[0].size();
+    int t[n][m];
+    memset(t,0,sizeof(t));
+
+    for(int j=0;j<m;j++)
+    {
+        if(a[0][j]==1)
+        break;
+        else
+        t[0][j]=1;
+           
+    }
+
+    for(int i=1;i<n;i++)
+    {
+        if(a[i][0]==1)
+        break;
+        else
+        t[i][0]=1;
+    }
+
+    for(int i=1;i<n;i++)
+    for(int j=1;j<m;j++)
+    {
+        if(a[i][j]==1)
+        continue;
+        else
+        t[i][j]=t[i-1][j]+t[i][j-1];
+    }
+
+    return t[n-1][m-1];
+}
+
+13. min path sum
+
+minPathSum(vector<vector<int> > &a) {
+
+    int n=a.size();
+    int m=a[0].size();
+
+    int t[n][m];
+    memset(t,0,sizeof(t));
+
+    t[0][0]=a[0][0];
+
+    for(int i=1;i<n;i++)
+       t[i][0]=a[i][0]+t[i-1][0];
+    
+    for(int j=1;j<m;j++)
+       t[0][j]=a[0][j]+t[0][j-1];
+
+       for(int i=1;i<n;i++)
+       for(int j=1;j<m;j++)
+         t[i][j]=a[i][j]+min(t[i-1][j],t[i][j-1]);
+
+     return t[n-1][m-1];
+}
+
+14. Dungeon And Princess
+
+
+    int n=a.size();
+    int m=a[0].size();
+
+     int t[n][m];
+     
+     if(a[n-1][m-1]<=0)
+       t[n-1][m-1]=abs(a[n-1][m-1])+1;
+     else
+       t[n-1][m-1]=1;
+
+       for(int i=n-2;i>=0;i--)
+         t[i][m-1]=max(t[i+1][m-1]-a[i][m-1],1);
+
+         for(int j=m-2;j>=0;j--)
+           t[n-1][j]=max(t[n-1][j+1]-a[n-1][j],1);
+
+        for(int i=n-2;i>=0;i--)
+           for(int j=m-2;j>=0;j--)
+           {
+               t[i][j]=max(min(t[i+1][j],t[i][j+1])-a[i][j],1);
+           }
+
+           return t[0][0];
+
+15.Maximum Product Subarray
+
+maxProduct(const vector<int> &a) {
+      int n=a.size();
+
+      int maxi=1;
+      int ans=a[0];
+      int product=1;
+
+      for(int i=0;i<n;i++)
+      {
+          if(a[i]==0)
+          {
+              maxi=1;
+              product=1;
+              if(ans<0)
+              ans=0;
+              continue;
+          }
+           product*=a[i];
+          ans=max(ans,max(product/maxi,product));
+          if(maxi==1&&product<0)
+          maxi=product;
+      }
+      return ans;
+}
+
+16. min path sum in triangle
+
+minimumTotal(vector<vector<int> > &a) {
+
+    int n=a.size();
+
+    int t[n][n];
+    memset(t,0,sizeof(t));
+
+    t[0][0]=a[0][0];
+
+    for(int i=1;i<n;i++)
+     { t[i][0]=t[i-1][0]+a[i][0];  
+        t[i][i]=t[i-1][i-1]+a[i][i];
+     } 
+
+     for(int i=2;i<n;i++)
+     for(int j=1;j<i;j++) 
+     {
+         t[i][j]=a[i][j]+min(t[i-1][j],t[i-1][j-1]);
+     }
+      int ans=t[n-1][0];
+     for(int j=0;j<n;j++)
+      ans=min(ans,t[n-1][j]);
+
+      return ans;
+
+}
+
+17. max path sum in triangle
+
+solve(vector<vector<int> > &a) {
+
+   int n=a.size();
+
+   int t[n][n];
+   t[0][0]=a[0][0];
+
+     for(int i=1;i<n;i++)
+     {
+         t[i][0]=t[i-1][0]+a[i][0];
+         t[i][i]=t[i-1][i-1]+a[i][i];
+     }
+
+     for(int i=2;i<n;i++)
+     for(int j=1;j<i;j++)
+     {
+        t[i][j]=a[i][j]+max(t[i-1][j-1],t[i-1][j]);
+
+     }
+
+     int ans=t[n-1][0];
+
+     for(int j=0;j<n;j++)
+     {
+         ans=max(ans,t[n-1][j]);
+     }
+
+     return ans;
+}
+
+
+18. Sub Matrix with sum equal to 0
+
+int checkZero(vector<int> &a,int n)
+{   
+   
+   map<int,int> mp;
+   int ans=0;
+   int sum=0;
+   mp[0]=1;
+
+   for(int i=0;i<n;i++)
+   {
+       sum+=a[i];
+       if(mp.find(sum)!=mp.end())
+       ans+=mp[sum];
+
+       mp[sum]++;
+   }
+
+   return ans;
+    
+
+}
+
+int Solution::solve(vector<vector<int> > &a) {
+
+    int n=a.size();
+    if(n==0)
+    return 0;
+    int m=a[0].size();
+  
+    int ans=0;
+       
+    for(int c1=0;c1<m;c1++)
+    {vector<int> temp(n,0);
+        for(int c2=c1;c2<m;c2++)
+        {
+            for(int i=0;i<n;i++)
+            temp[i]+=a[i][c2];
+
+            ans+=checkZero(temp,n);
+        }
+    }
+
+    return ans;
+}
+
+19. coin change (n) space comp.
+
+coinchange2(vector<int> &a, int m) {
+     int n=a.size();
+      int mod=1000007;
+     int t[m+1];
+
+     memset(t,0,sizeof(t));
+     t[0]=1;
+
+     for(int i=0;i<n;i++)
+     for(int j=a[i];j<=m;j++)
+     {
+         t[j]=t[j]+t[j-a[i]];
+         t[j]%=mod;
+     }
+
+     return t[m];
+
+}
+
+20. max profit buy and sell stocks 
+
+maxProfit(const vector<int> &a) {
+    int ans=0;
+
+    if(a.size()==0||a.size()==1)
+    return 0;
+
+    for(int i=1;i<a.size();i++)
+    {
+        if(a[i]-a[i-1]>=0)
+        ans+=a[i]-a[i-1];
+    }
+
+    return ans;
+}
+
+21. word break
+
+wordBreak(string a, vector<string> &b) {
+
+   if(b.empty()) return 0;
+    unordered_set<string> s;
+    for(string str : b) s.insert(str);
+    vector<bool> dp(a.size()+1,0);//dp[i] is true if a valid sequence ends there.
+    dp[0] = 1;
+    for(int i=1; i<=a.size(); i++)
+    {
+        for(int j=i-1; j>=0; j--)
+        {
+            if(dp[j])
+            {
+                if(s.find(a.substr(j,i-j)) != s.end())
+                {
+                    dp[i] = 1;
+                    break;
+                }
+            }
+        }
+    }
+    return dp[a.size()];
+}
+
+22. Longest incresing path in a matrix
+
+solve(vector<vector<int>> &a) {
+
+    int n=a.size();
+    int m=a[0].size();
+
+    int t[n][m];
+
+    memset(t,0,sizeof(t));
+
+    t[0][0]=1;
+
+    for(int i=1;i<n;i++)
+       if(a[i][0]>a[i-1][0])
+       t[i][0]+=t[i-1][0];
+       else
+       break;
+
+    for(int j=1;j<m;j++)
+       if(a[0][j]>a[0][j-1])
+       t[j][0]+=t[j-1][0];
+       else
+       break;
+
+       for(int i=1;i<n;i++)
+       for(int j=1;j<m;j++)
+       {
+           if(t[i-1][j]==0&&t[i][j-1]==0)
+             t[i][j]=0;
+          else
+          if(t[i-1][j]==0&&a[i][j-1]<a[i][j])
+          {
+              t[i][j]+=t[i][j-1]+1;   
+          }
+          else
+          if(t[i][j-1]==0&&a[i-1][j]<a[i][j])
+          {
+              t[i][j]+=t[i-1][j]+1;
+          }
+          else
+          if(a[i][j-1]<a[i][j]&&a[i-1][j]<a[i][j])
+          {
+              t[i][j]+=1+max(t[i-1][j],t[i][j-1]);
+          }
+           else
+           t[i][j]=0;
+       }
+
+
+       if(t[n-1][m-1]==0)
+       return -1;
+       else
+       return t[n-1][m-1];
+
+     
+}

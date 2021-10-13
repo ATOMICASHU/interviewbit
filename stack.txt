@@ -139,7 +139,6 @@ vector<int> nsr(vector<int> a)
             
             s.push({a[i],i});
         }
-        
         return ans;
     
     
@@ -164,7 +163,7 @@ vector<int> nsr(vector<int> a)
         
     }
 
-int Solution::maximalRectangle(vector<vector<int> > &A) {
+maximalRectangle(vector<vector<int> > &A) {
 
     int n=A.size();
     int m=A[0].size();
